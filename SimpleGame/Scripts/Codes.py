@@ -1,7 +1,7 @@
-from enum import IntEnum
+from enum import Enum
 
 
-class StatusCodes(IntEnum):
+class StatusCodes(Enum):
 
     OK : 0
     ERROR : 1

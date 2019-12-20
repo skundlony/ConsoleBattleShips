@@ -1,6 +1,6 @@
-from enum import IntEnum
+from enum import Enum
 
-class State(IntEnum):
+class State(Enum):
 
     EMPTY = 0
     MISS = 1

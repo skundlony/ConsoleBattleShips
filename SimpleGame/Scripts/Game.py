@@ -6,7 +6,7 @@ import random
 
 def shipToPlace(i: int):
 
-    if i > 4:
+    if i > len(self.selfMatrix):
         print("Bad ship. Take one from range 1-4")
         return StatusCodes.ERROR;
 
