@@ -1,10 +1,8 @@
-from enum import Enum
+from enum import IntEnum
 
-class StateEnum(Enum):
+class State(IntEnum):
 
     EMPTY = 0
     MISS = 1
     HIT = 2
     ALIVE = 3
-
-

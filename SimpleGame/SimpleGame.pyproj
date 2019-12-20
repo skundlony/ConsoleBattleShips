@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>70511cbb-a147-445b-9463-18102fdac0e4</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Game.py</StartupFile>
+    <StartupFile>Scripts\Game.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,16 +21,22 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Player.py">
+    <Compile Include="Scripts\Codes.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Game.py" />
-    <Compile Include="State.py">
+    <Compile Include="Scripts\Player.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripts\Game.py" />
+    <Compile Include="Scripts\State.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="__init__.py">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
