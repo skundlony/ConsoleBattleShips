@@ -8,7 +8,11 @@ def shipToPlace(i: int):
 
     if i > len(player.ships):
         print("Bad ship. Take one from range 1-4")
-        return StatusCodes.ERROR;
+        return StatusCodes.ERROR
+
+    if player.ships[i-1][1] == 0:
+        print("You have used all of this grade ships. Select another")
+        return StatusCodes.ERROR
 
     player.PrintSelfMatrix()
     x = int(input("x?"))
@@ -24,7 +28,8 @@ def PrintInfo():
     print("You have: ")
     for i in range(counter):
         j = i+1
-        print(str(j)+"x "+ str(player.ships[i][0]) +"pool ship")
+        if player.ships[i][1] > 0:
+            print(str(j)+") "+str(player.ships[i][0]) +"pool ship.")
 
 def Place():
     ship = int(input("What ship do u want to place?"))

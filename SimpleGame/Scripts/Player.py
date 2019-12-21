@@ -4,10 +4,10 @@ from Scripts.Codes import StatusCodes
 class Player(object):
 
     # index +1 means how many "pools has one ship" [how many ships left, how many pools of this ships left]
-    ships = [[4, 4],
-             [3, 6],
+    ships = [[1, 4],
              [2, 6],
-             [1, 4]]
+             [3, 6],
+             [4, 4]]
 
     #sum of ship pools
     LifePoints = 20
@@ -21,6 +21,8 @@ class Player(object):
         if self.CheckForShipPlace(i, x, y) == StatusCodes.ERROR:
             return StatusCodes.ERROR
 
+        placedPools = 0
+
         # players typing shop from 1 to 4
         # matrix indexes are from 0 to 3
         # so we have to decrease value
@@ -30,32 +32,42 @@ class Player(object):
             return StatusCodes.ERROR
 
         self.PlaceOnMatrix(x, y)
+        placedPools += 1
 
         #we placed first, but our index in ships is -1 already.
         HowManyPoolsLeft = i
-        straightGuard = 0
-        straightCord = 0
-
-        if HowManyPoolsLeft > 1:
-            straightGuard = 1
+        straightCord = [0,0]
 
         while HowManyPoolsLeft > 0:
             
-            cord_X = int(input("Next cord X of point?"))
-            cord_Y = int(input("Next cord Y of point?"))
+            cord_X = x
+            cord_Y = y
+
+            if straightCord != [x, 0]:
+                cord_X = int(input("Next cord X of point?"))
+
+            if straightCord != [0, y]:
+                cord_Y = int(input("Next cord Y of point?"))
 
             if self.CheckForGoodPostion(cord_X, cord_Y, x, y) == StatusCodes.ERROR:
                 print("Bad point. Type another.")
                 continue
 
-            self.PlaceOnMatrix(cord_X, cord_Y)
+            if x == cord_X:
+                straightCord = [x,0]
+            elif y == cord_Y:
+                straightCord = [0,y]
 
+            self.PlaceOnMatrix(cord_X, cord_Y)
+            placedPools += 1
             HowManyPoolsLeft -= 1
 
             # we have to store last point in x and y vars
             x = cord_X
             y = cord_Y
-
+        
+        left = self.ships[i][1]
+        self.ships[i] = [i+1 ,left - placedPools]
         return StatusCodes.OK
 
     #before we placing a ship, we have to check that we have a space to place it
