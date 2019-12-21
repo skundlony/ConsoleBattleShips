@@ -18,56 +18,128 @@ class Player(object):
     # i - HowManyPoolsHasShip, x - cord_X, y - cord_Y
     def PlaceOwnShip(self, i: int, x: int, y: int):
 
+        if self.CheckForShipPlace(i, x, y) == StatusCodes.ERROR:
+            return StatusCodes.ERROR
+
         # players typing shop from 1 to 4
         # matrix indexes are from 0 to 3
         # so we have to decrease value
         i -= 1
 
-        if self.ships[i][0] == 0:
-            print("There is no ship of this type")
+        if self.CheckForGoodPostion(x, y, 0, 0) == StatusCodes.ERROR:
             return StatusCodes.ERROR
-        
-        # how many pools has ship, that how many times places pool.
-        # place first pool
-        
-        howManyPoolsForShip = self.ships[i][1] / self.ships[i][0]
 
         self.PlaceOnMatrix(x, y)
 
         #we placed first, but our index in ships is -1 already.
         HowManyPoolsLeft = i
+        straightGuard = 0
+        straightCord = 0
+
+        if HowManyPoolsLeft > 1:
+            straightGuard = 1
 
         while HowManyPoolsLeft > 0:
             
             cord_X = int(input("Next cord X of point?"))
             cord_Y = int(input("Next cord Y of point?"))
 
-            if cord_X == x | cord_Y == y:
-                print("Bad point. Type other. Points of ship should be next to other one. "+x+ " "+y)
-
-            if self.PlaceOnMatrix(cord_X, cord_Y) == 1:
-                print("Bad point")
+            if self.CheckForGoodPostion(cord_X, cord_Y, x, y) == StatusCodes.ERROR:
+                print("Bad point. Type another.")
                 continue
-            # should add method to check if postion is good
+
+            self.PlaceOnMatrix(cord_X, cord_Y)
+
             HowManyPoolsLeft -= 1
 
-            # we have to stre last point in x and y vars
+            # we have to store last point in x and y vars
             x = cord_X
             y = cord_Y
 
         return StatusCodes.OK
 
+    #before we placing a ship, we have to check that we have a space to place it
+    def CheckForShipPlace(self, i: int, x: int, y: int):
+
+        poolsToCheck = i - 1
+        errors = 0
+        minRangeX = x-poolsToCheck
+        maxRangeX = x+poolsToCheck
+        minRangeY = y-poolsToCheck
+        maxRangeY = y+poolsToCheck
+
+        if minRangeX > 0:
+            minRangeX = 1
+
+        if minRangeY > 0:
+            minRangeY = 1
+
+        if maxRangeX > 10:
+            maxRangeX = 10
+
+        if maxRangeY > 10:
+            maxRangeY = 10
+
+        for rangeX in range(minRangeX, x):
+            if self.selfMatrix[rangeX][y] != State.EMPTY:
+                errors += 1
+                break
+
+        for rangeX in range(x, maxRangeX):
+            if self.selfMatrix[rangeX][y] != State.EMPTY:
+                errors += 1
+                break
+
+        for rangeY in range(minRangeY, y):
+            if self.selfMatrix[x][rangeY] != State.EMPTY:
+                errors += 1
+                break
+
+        for rangeY in range(y, maxRangeY):
+            if self.selfMatrix[x][rangeY] != State.EMPTY:
+                errors +=1
+                break
+
+        if erros == 4:
+            return StatusCodes.ERROR
+
+        return StatusCodes.OK
 
 
+
+    def CheckForGoodPostion(self, x: int, y: int, lastX: int, lastY: int):
+
+        minRangeX = x-1
+        maxRangeX = x+1
+        minRangeY = y-1
+        maxRangeY = y+1
+
+        if minRangeX > 0:
+            minRangeX = 1
+
+        if minRangeY > 0:
+            minRangeY = 1
+
+        if maxRangeX > 10:
+            maxRangeX = 10
+
+        if maxRangeY > 10:
+            maxRangeY = 10
+
+        for rangeX in range(x-1, x+1):
+            for rangeY in range(y-1, y+1):
+                if self.selfMatrix[rangeX][rangeY] != State.EMPTY:
+                    if lastX != 0 & lastY != 0 & rangeX != lastX & rangeY != lastY:
+                        return StatusCodes.ERROR
+        return StatusCodes.OK
+
+    # Placing single block on matrix
     def PlaceOnMatrix(self, x: int, y: int):
         if self.selfMatrix[x-1][y-1] == State.EMPTY:
             self.selfMatrix[x-1][y-1] = State.ALIVE
-            self.LifePoints -= 1
-            printf("Placed")
-        else: 
-            return 1
+            printf("Placed.")
 
-    # 0 - hit counted, 1 - hit to repeat
+
     def Hit(self, x: int, y: int):
         if self.enemyMatrix[x][y] == State.EMPTY:
             print("Miss.")
@@ -75,16 +147,19 @@ class Player(object):
         elif self.enemyMatrix[x][y] == State.ALIVE:
             print("Hit!")
             self.enemyMatrix[x][y] = State.HIT
+            return State.HIT
         elif self.enemyMatrix[x][y] == State.MISS:
             print("You are trying to repeat hit. Please choose other field.")
-            return 1
-        return 0
+            StatusCodes.ERROR
+        return StatusCodes.OK
+
 
     def Defense(self, x: int, y: int):
         if self.enemyMatrix[x][y] == State.ALIVE:
             self.enemyMatrix[x][y] = State.HIT
-        return 0
+        return StatusCodes.OK
 
+    # Prints Matrix
     def PrintSelfMatrix(self):
         print("")
         for i in range(10):
@@ -95,9 +170,4 @@ class Player(object):
                     print("[O]", end = "")
             print("")
         print("")
-        return 0
-
-
-
-
-
+        return StatusCodes.OK
