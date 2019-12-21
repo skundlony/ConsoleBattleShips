@@ -139,6 +139,7 @@ class Player(object):
         if maxRangeY > 10:
             maxRangeY = 10
 
+            # logic error
         for rangeX in range(x-1, x+1):
             for rangeY in range(y-1, y+1):
                 if self.selfMatrix[rangeX][rangeY] != State.EMPTY:
