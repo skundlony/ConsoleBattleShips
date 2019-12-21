@@ -63,6 +63,7 @@ class Player(object):
 
         poolsToCheck = i - 1
         errors = 0
+        singleErrors = i - 1
         minRangeX = x-poolsToCheck
         maxRangeX = x+poolsToCheck
         minRangeY = y-poolsToCheck
@@ -100,7 +101,7 @@ class Player(object):
                 errors +=1
                 break
 
-        if erros == 4:
+        if errors == 4:
             return StatusCodes.ERROR
 
         return StatusCodes.OK
@@ -137,7 +138,7 @@ class Player(object):
     def PlaceOnMatrix(self, x: int, y: int):
         if self.selfMatrix[x-1][y-1] == State.EMPTY:
             self.selfMatrix[x-1][y-1] = State.ALIVE
-            printf("Placed.")
+            print("Placed.")
 
 
     def Hit(self, x: int, y: int):
@@ -170,4 +171,3 @@ class Player(object):
                     print("[O]", end = "")
             print("")
         print("")
-        return StatusCodes.OK
