@@ -18,6 +18,9 @@ class Player(object):
     # i - HowManyPoolsHasShip, x - cord_X, y - cord_Y
     def PlaceOwnShip(self, i: int, x: int, y: int):
 
+        x -= 1
+        y -= 1
+
         if self.CheckForShipPlace(i, x, y) == StatusCodes.ERROR:
             return StatusCodes.ERROR
 
@@ -44,10 +47,30 @@ class Player(object):
             cord_Y = y
 
             if straightCord != [x, 0]:
-                cord_X = int(input("Next cord X of point?"))
+
+                while 1:
+                    try:
+                        cord_X = int(input("Next cord X of point?"))
+                        if(0 < cord_X < 11):
+                            cord_X -=1
+                            break
+                        else:
+                            print("Type range 1-10")
+                    except:
+                        print("Cords are numbers with range 1-10.")
 
             if straightCord != [0, y]:
-                cord_Y = int(input("Next cord Y of point?"))
+                
+                while 1:
+                    try:
+                        cord_Y = int(input("Next cord Y of point?"))
+                        if(0 < cord_Y < 11):
+                            cord_Y -= 1
+                            break
+                        else:
+                            print("Type range 1-10")
+                    except:
+                        print("Cords are numbers with range 1-10.")
 
             if self.CheckForGoodPostion(cord_X, cord_Y, x, y) == StatusCodes.ERROR:
                 print("Bad point. Type another.")
@@ -72,6 +95,9 @@ class Player(object):
 
     #before we placing a ship, we have to check that we have a space to place it
     def CheckForShipPlace(self, i: int, x: int, y: int):
+
+        if self.selfMatrix[x][y] == State.ALIVE:
+            return StatusCodes.ERROR
 
         poolsToCheck = i - 1
         errors = 0
@@ -149,8 +175,8 @@ class Player(object):
 
     # Placing single block on matrix
     def PlaceOnMatrix(self, x: int, y: int):
-        if self.selfMatrix[x-1][y-1] == State.EMPTY:
-            self.selfMatrix[x-1][y-1] = State.ALIVE
+        if self.selfMatrix[x][y] == State.EMPTY:
+            self.selfMatrix[x][y] = State.ALIVE
             print("Placed.")
 
 

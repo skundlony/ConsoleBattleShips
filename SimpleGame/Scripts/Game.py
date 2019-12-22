@@ -32,8 +32,12 @@ def PrintInfo():
             print(str(j)+") "+str(player.ships[i][0]) +"pool ship.")
 
 def Place():
-    ship = int(input("What ship do u want to place?"))
-    shipToPlace(ship)
+    try:
+        ship = int(input("What ship do u want to place?"))
+        shipToPlace(ship)
+    except:
+        print("You have to use numbers.")
+        Place()
 
 player = Player()
 enemy = Player()
