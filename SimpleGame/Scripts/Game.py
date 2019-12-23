@@ -39,15 +39,30 @@ def Place():
         print("You have to use numbers.")
         Place()
 
+
+def StartBattle():
+    return 1
+
+
+def PrintGreetings():
+    print("Welcome to battleships game!")
+    print("Please place your ships")
+
+
+#inits
 player = Player()
 enemy = Player()
 
 
 
-print("Welcome to battleships game!")
-print("Please place your ships")
-while 1:
-    PrintInfo()
-    Place()
+#main game loop
+PrintGreetings()
+while player.LifePoints > 0 | enemy.LifePoints > 0:
+    while player.GetSumOfLeftPools() > 0:
+        PrintInfo()
+        Place()
 
+    print("Enemy is placing ships.")
+    # run method to place enemy ships
 
+    StartBattle()

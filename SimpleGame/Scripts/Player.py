@@ -15,6 +15,16 @@ class Player(object):
     selfMatrix = [[ State.EMPTY for i in range(10)] for j in range (10)]
     enemyMatrix = [[ State.EMPTY for i in range(10)] for j in range (10)]
 
+
+    def GetSumOfLeftPools(self):
+
+        sum = 0
+        for x in range(4):
+            sum += self.ships[x][1]
+
+        return sum
+
+
     # i - HowManyPoolsHasShip, x - cord_X, y - cord_Y
     def PlaceOwnShip(self, i: int, x: int, y: int):
 
@@ -31,7 +41,7 @@ class Player(object):
         # so we have to decrease value
         i -= 1
 
-        if self.CheckForGoodPostion(x, y, 0, 0) == StatusCodes.ERROR:
+        if self.CheckForGoodPostion(x, y, 0, 0, True) == StatusCodes.ERROR:
             return StatusCodes.ERROR
 
         self.PlaceOnMatrix(x, y)
@@ -48,31 +58,31 @@ class Player(object):
 
             if straightCord != [x, 0]:
 
-                while 1:
+                while True:
                     try:
-                        cord_X = int(input("Next cord X of point?"))
+                        cord_X = int(input("Next cord X of point?\n"))
                         if(0 < cord_X < 11):
                             cord_X -=1
                             break
                         else:
-                            print("Type range 1-10")
+                            print("Type range 1-10\n")
                     except:
-                        print("Cords are numbers with range 1-10.")
+                        print("Cords are numbers with range 1-10.\n")
 
             if straightCord != [0, y]:
                 
-                while 1:
+                while True:
                     try:
-                        cord_Y = int(input("Next cord Y of point?"))
+                        cord_Y = int(input("Next cord Y of point?\n"))
                         if(0 < cord_Y < 11):
                             cord_Y -= 1
                             break
                         else:
-                            print("Type range 1-10")
+                            print("Type range 1-10\n")
                     except:
-                        print("Cords are numbers with range 1-10.")
+                        print("Cords are numbers with range 1-10.\n")
 
-            if self.CheckForGoodPostion(cord_X, cord_Y, x, y) == StatusCodes.ERROR:
+            if self.CheckForGoodPostion(cord_X, cord_Y, x, y, False) == StatusCodes.ERROR:
                 print("Bad point. Type another.")
                 continue
 
@@ -97,27 +107,28 @@ class Player(object):
     def CheckForShipPlace(self, i: int, x: int, y: int):
 
         if self.selfMatrix[x][y] == State.ALIVE:
+            print("Oh! There is ship already.")
             return StatusCodes.ERROR
 
         poolsToCheck = i - 1
         errors = 0
         singleErrors = i - 1
-        minRangeX = x-poolsToCheck
-        maxRangeX = x+poolsToCheck
-        minRangeY = y-poolsToCheck
-        maxRangeY = y+poolsToCheck
+        minRangeX = x-poolsToCheck+1
+        maxRangeX = x+poolsToCheck+1
+        minRangeY = y-poolsToCheck+1
+        maxRangeY = y+poolsToCheck+1
 
-        if minRangeX > 0:
-            minRangeX = 1
+        if minRangeX < 0:
+            minRangeX = 0
 
-        if minRangeY > 0:
-            minRangeY = 1
+        if minRangeY < 0:
+            minRangeY = 0
 
-        if maxRangeX > 10:
-            maxRangeX = 10
+        if maxRangeX > 9:
+            maxRangeX = 9
 
-        if maxRangeY > 10:
-            maxRangeY = 10
+        if maxRangeY > 9:
+            maxRangeY = 9
 
         for rangeX in range(minRangeX, x):
             if self.selfMatrix[rangeX][y] != State.EMPTY:
@@ -146,31 +157,35 @@ class Player(object):
 
 
 
-    def CheckForGoodPostion(self, x: int, y: int, lastX: int, lastY: int):
+    def CheckForGoodPostion(self, x: int, y: int, lastX: int, lastY: int, new: bool):
 
-        minRangeX = x-1
-        maxRangeX = x+1
-        minRangeY = y-1
-        maxRangeY = y+1
+        minRangeX = x
+        maxRangeX = x+2
+        minRangeY = y
+        maxRangeY = y+2
 
-        if minRangeX > 0:
-            minRangeX = 1
+        if minRangeX < 0:
+            minRangeX = 0
 
-        if minRangeY > 0:
-            minRangeY = 1
+        if minRangeY < 0:
+            minRangeY = 0
 
-        if maxRangeX > 10:
-            maxRangeX = 10
+        if maxRangeX > 9:
+            maxRangeX = 9
 
-        if maxRangeY > 10:
-            maxRangeY = 10
+        if maxRangeY > 9:
+            maxRangeY = 9
 
-            # logic error
-        for rangeX in range(x-1, x+1):
-            for rangeY in range(y-1, y+1):
+        for rangeX in range(minRangeX, maxRangeX):
+            for rangeY in range(minRangeY, maxRangeY):
                 if self.selfMatrix[rangeX][rangeY] != State.EMPTY:
-                    if lastX != 0 & lastY != 0 & rangeX != lastX & rangeY != lastY:
+                    if new: 
+                        print("Ship has to have one pool break.")
                         return StatusCodes.ERROR
+                    else:
+                        if lastX != 0 & lastY != 0 & rangeX != lastX & rangeY != lastY:
+                            print("Too close to other ship.")
+                            return StatusCodes.ERROR
         return StatusCodes.OK
 
     # Placing single block on matrix
